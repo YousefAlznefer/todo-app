@@ -30,6 +30,15 @@ app.post('/api/tasks', (req, res) => {
     res.status(201).json(newTask);
 });
 
+app.get('/api/tasks/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const task = tasks.find(t => t.id === id);
+    if (!task) {
+        return res.status(404).json({ error: 'task not found' });
+    }
+    res.json(task);
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
