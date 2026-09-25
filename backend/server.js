@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+app.use(express.json());
 const PORT = 3000;
 let tasks = [
     { id: 1, title: "Learn Express", completed: false },
@@ -13,6 +14,17 @@ app.get('/', (req, res) => {
 
 app.get('/api/tasks', (req, res) => {
     res.json(tasks);
+});
+
+app.post('/api/tasks', (req, res) => {
+    const read = req.body;
+    const newTask = {
+        id: Date.now(),
+        title: read.title,
+        completed: false
+    };
+    tasks.push(newTask);
+    res.status(201).json(newTask);
 });
 
 app.listen(PORT, () => {
