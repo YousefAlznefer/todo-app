@@ -43,6 +43,21 @@ app.get('/api/tasks/:id', (req, res) => {
     res.json(task);
 });
 
+app.delete('/api/tasks/:id', (req, res) => {
+    const id = Number(req.params.id);
+    if (isNaN(id)) {
+        return res.status(400).json({ error: 'Invalid task ID' });
+    }
+    const task = tasks.findIndex(t => t.id === id);
+    if (task ===-1) {
+        return res.status(404).json({ error: 'task not found' });
+
+    }
+    tasks.splice(task, 1);
+    res.status(204).send();
+
+})
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
