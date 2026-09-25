@@ -17,12 +17,15 @@ app.get('/api/tasks', (req, res) => {
 });
 
 app.post('/api/tasks', (req, res) => {
-    const read = req.body;
+    const body = req.body;
     const newTask = {
         id: Date.now(),
-        title: read.title,
+        title: body.title,
         completed: false
     };
+    if (!newTask.title) {
+        return res.status(400).json({ error: 'Title is required' });
+    }
     tasks.push(newTask);
     res.status(201).json(newTask);
 });
