@@ -14,7 +14,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/tasks', (req, res) => {
-    res.json(tasks);
+   const data = db.prepare(`SELECT * FROM tasks`).all();
+   res.json(data);
 });
 
 app.post('/api/tasks', (req, res) => {
@@ -34,7 +35,7 @@ app.post('/api/tasks', (req, res) => {
 function findTask(req, res, next) {
     const id = Number(req.params.id);
     if (isNaN(id)) { return res.status(400).json({ message: 'invalid task id' }) }
-    const task = tasks.find(t => t.id === id);
+    const task = db.prepare(`SELECT * FROM tasks WHERE id = ?`).get(id);
     if (!task) { return res.status(404).json({ message: 'task not found' }) }
     req.task = task;
     next()

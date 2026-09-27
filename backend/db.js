@@ -10,5 +10,13 @@ db.exec(`
     )
     `);
 
+    const count = db.prepare('SELECT COUNT(*) AS count FROM tasks').get().count;
+    if(count == 0 ){
+        const insert = db.prepare('INSERT INTO tasks (title, completed) VALUES (?, ?)');
+        insert.run('Learn express' , 0);
+        insert.run('Build a todo app' , 0);
+        insert.run('Install Node.js' , 1);
+    }
+
     module.exports = db;
 
