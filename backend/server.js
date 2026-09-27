@@ -30,39 +30,29 @@ app.post('/api/tasks', (req, res) => {
     res.status(201).json(newTask);
 });
 
-app.get('/api/tasks/:id', (req, res) => {
+function findTask(req, res, next) {
     const id = Number(req.params.id);
-    if (isNaN(id)) {
-        return res.status(400).json({ error: 'Invalid task ID' });
-    }
+    if (isNaN(id)) { return res.status(400).json({ message: 'invalid task id' }) }
     const task = tasks.find(t => t.id === id);
-    if (!task) {
-        return res.status(404).json({ error: 'task not found' });
-    }
+    if (!task) { return res.status(404).json({ message: 'task not found' }) }
+    req.task = task;
+    next()
 
-    res.json(task);
+}
+
+app.get('/api/tasks/:id', findTask, (req, res) => {
+    res.json(req.task);
 });
 
-app.delete('/api/tasks/:id', (req, res) => {
-    const id = Number(req.params.id);
-    if (isNaN(id)) {
-        return res.status(400).json({ error: 'Invalid task ID' });
-    }
-    const task = tasks.findIndex(t => t.id === id);
-    if (task === -1) {
-        return res.status(404).json({ error: 'task not found' });
-
-    }
-    tasks.splice(task, 1);
+app.delete('/api/tasks/:id', findTask, (req, res) => {
+    const index = tasks.indexOf(req.task)
+    tasks.splice(index, 1);
     res.status(204).send();
 
 })
 
-app.patch('/api/tasks/:id', (req, res) => {
-    const id = Number(req.params.id);
-    if (isNaN(id)) { return res.status(400).json({ message: 'invalid task ID' }) }
-    const task = tasks.find(t => t.id === id);
-    if (!task) { return res.status(404).json({ message: 'task not found' }) }
+app.patch('/api/tasks/:id', findTask, (req, res) => {
+    const task = req.task;
     const title = req.body.title;
     const completed = req.body.completed;
     if (title === undefined && completed === undefined) {
