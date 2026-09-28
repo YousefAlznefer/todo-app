@@ -14,8 +14,9 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/tasks', (req, res) => {
-   const data = db.prepare(`SELECT * FROM tasks`).all();
-   res.json(data);
+    const data = db.prepare(`SELECT * FROM tasks`).all();
+
+    res.json(data.map(toTask));
 });
 
 app.post('/api/tasks', (req, res) => {
@@ -32,12 +33,16 @@ app.post('/api/tasks', (req, res) => {
     res.status(201).json(newTask);
 });
 
+function toTask(row) {
+    return { id: row.id, title: row.title, completed: row.completed === 1 }
+}
+
 function findTask(req, res, next) {
     const id = Number(req.params.id);
     if (isNaN(id)) { return res.status(400).json({ message: 'invalid task id' }) }
     const task = db.prepare(`SELECT * FROM tasks WHERE id = ?`).get(id);
     if (!task) { return res.status(404).json({ message: 'task not found' }) }
-    req.task = task;
+    req.task = toTask(task);
     next()
 
 }
