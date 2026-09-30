@@ -19,17 +19,15 @@ app.get('/api/tasks', (req, res) => {
 });
 
 app.post('/api/tasks', (req, res) => {
-    const body = req.body;
-    const newTask = {
-        id: Date.now(),
-        title: body.title,
-        completed: false
-    };
-    if (!newTask.title) {
-        return res.status(400).json({ error: 'Title is required' });
+    const body = req.body || {}
+    const title = body.title;
+    if (!title || !title.trim()) {
+        return res.status(400).json({ message: 'Title is required' })
     }
-    tasks.push(newTask);
-    res.status(201).json(newTask);
+    const result = db.prepare(`INSERT INTO tasks (title) VALUES (?)`).run(title.trim());
+    const row = db.prepare(`SELECT * FROM tasks WHERE id = ?`).get(result.lastInsertRowid);
+    res.status(201).json(toTask(row))
+
 });
 
 function toTask(row) {
