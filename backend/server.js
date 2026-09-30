@@ -15,7 +15,6 @@ app.get('/', (req, res) => {
 
 app.get('/api/tasks', (req, res) => {
     const data = db.prepare(`SELECT * FROM tasks`).all();
-
     res.json(data.map(toTask));
 });
 
@@ -52,10 +51,8 @@ app.get('/api/tasks/:id', findTask, (req, res) => {
 });
 
 app.delete('/api/tasks/:id', findTask, (req, res) => {
-    const index = tasks.indexOf(req.task)
-    tasks.splice(index, 1);
+    db.prepare(`DELETE FROM tasks WHERE id = ?`).run(req.task.id);
     res.status(204).send();
-
 })
 
 app.patch('/api/tasks/:id', findTask, (req, res) => {
