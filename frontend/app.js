@@ -1,3 +1,5 @@
+
+
 async function loadTasks() {
     const response = await fetch('/api/tasks')
     const tasks = await response.json();
@@ -5,7 +7,7 @@ async function loadTasks() {
     list.innerHTML = '';
     tasks.forEach(task => {
         const li = document.createElement('li');
-        li.textContent = task.title;
+        li.textContent = task.completed === true ? `✅  ${task.title}` : `${task.title}`;
         list.appendChild(li);
     })
 }
