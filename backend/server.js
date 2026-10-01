@@ -1,17 +1,12 @@
+const path = require('path');
 const express = require('express');
 const db = require('./db');
 const app = express();
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
 const PORT = 3000;
-let tasks = [
-    { id: 1, title: "Learn Express", completed: false },
-    { id: 2, title: "Build a todo app", completed: false },
-    { id: 3, title: "Install Node.js", completed: true },
-];
 
-app.get('/', (req, res) => {
-    res.send('The server is running!');
-});
+
 
 app.get('/api/tasks', (req, res) => {
     const data = db.prepare(`SELECT * FROM tasks`).all();
