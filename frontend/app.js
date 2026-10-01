@@ -11,4 +11,22 @@ async function loadTasks() {
         list.appendChild(li);
     })
 }
-loadTasks()
+
+const form = document.getElementById('task-form');
+const input = document.getElementById('task-input');
+
+form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const title = input.value;
+
+    await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: title })
+    });
+    loadTasks()
+})
+
+
+  loadTasks()
+
