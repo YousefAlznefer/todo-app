@@ -17,16 +17,17 @@ const input = document.getElementById('task-input');
 
 form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    const title = input.value;
-
+    const title = input.value.trim();
+    if(!title) return;
     await fetch('/api/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: title })
     });
     loadTasks()
+    input.value = '';
 })
 
 
-  loadTasks()
+loadTasks()
 
