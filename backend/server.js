@@ -7,7 +7,6 @@ app.use(express.static(path.join(__dirname, '..', 'frontend')));
 const PORT = 3000;
 
 
-
 app.get('/api/tasks', (req, res) => {
     const data = db.prepare(`SELECT * FROM tasks`).all();
     res.json(data.map(toTask));
