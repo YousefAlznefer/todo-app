@@ -54,16 +54,26 @@ app.delete('/api/tasks/:id', findTask, (req, res) => {
 })
 
 app.patch('/api/tasks/:id', findTask, (req, res) => {
-    const task = req.task;
-    const title = req.body.title;
-    const completed = req.body.completed;
+    const body = req.body || {};
+    const title = body.title;
+    const completed = body.completed;
+
     if (title === undefined && completed === undefined) {
-        return res.status(400).json({ message: 'no data provided for update' });
+        return res.status(400).json({ message: 'No data provided for update' });
     }
-    if (title !== undefined) { task.title = title }
-    if (completed !== undefined) { task.completed = completed }
-    res.json(task);
-})
+    if (title !== undefined && !title.trim()) {
+        return res.status(400).json({ message: 'Title cannot be empty' });
+    }
+
+    const newTitle = title !== undefined ? title.trim() : req.task.title;
+    const newCompleted = completed !== undefined ? completed : req.task.completed;
+
+    db.prepare(`UPDATE tasks SET title = ?, completed = ? WHERE id = ?`)
+        .run(newTitle, newCompleted ? 1 : 0, req.task.id);
+
+    const row = db.prepare(`SELECT * FROM tasks WHERE id = ?`).get(req.task.id);
+    res.json(toTask(row));
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
