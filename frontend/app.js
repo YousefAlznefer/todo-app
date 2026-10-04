@@ -6,13 +6,31 @@ async function loadTasks() {
     const list = document.getElementById('task-list');
     list.innerHTML = '';
 
-    tasks.forEach(task => {
-        // ===== المرحلة 1: أنشئ المهمة وضع العنوان =====
-        const li = document.createElement('li');
-        li.textContent = task.completed === true ? `✅  ${task.title}` : task.title;
-        li.style.cursor = 'pointer';
+    // العدّاد
+    const done = tasks.filter(task => task.completed).length;
+    document.getElementById('counter').textContent = `${done} of ${tasks.length} completed`;
 
-        // ===== المرحلة 2: الضغط على المهمة يقلب حالتها =====
+    // رسالة القائمة الفارغة
+    document.getElementById('empty').hidden = tasks.length > 0;
+
+    tasks.forEach(task => {
+        // المرحلة 1: أنشئ المهمة وقطعها الثلاث
+        const li = document.createElement('li');
+        if (task.completed) li.classList.add('completed');
+
+        const check = document.createElement('span');
+        check.className = 'check';
+        check.textContent = task.completed ? '✓' : '';
+
+        const title = document.createElement('span');
+        title.className = 'title';
+        title.textContent = task.title;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete';
+        deleteBtn.textContent = '✕';
+
+        // المرحلة 2: الضغط على المهمة يقلب حالتها
         li.addEventListener('click', async () => {
             await fetch(`/api/tasks/${task.id}`, {
                 method: 'PATCH',
@@ -22,22 +40,15 @@ async function loadTasks() {
             loadTasks();
         });
 
-        // ===== المرحلة 3: زر الحذف =====
-        const deleteBtn = document.createElement('button');
-        deleteBtn.textContent = '🗑️';
-        deleteBtn.style.cursor = 'pointer';
-
+        // المرحلة 3: زر الحذف
         deleteBtn.addEventListener('click', async (event) => {
             event.stopPropagation();
-            await fetch(`/api/tasks/${task.id}`, {
-                method: 'DELETE'
-            });
+            await fetch(`/api/tasks/${task.id}`, { method: 'DELETE' });
             loadTasks();
         });
 
-        li.appendChild(deleteBtn);
-
-        // ===== المرحلة 4: ضع المهمة في القائمة =====
+        // المرحلة 4: ركّب القطع وضع المهمة في القائمة
+        li.append(check, title, deleteBtn);
         list.appendChild(li);
     });
 }

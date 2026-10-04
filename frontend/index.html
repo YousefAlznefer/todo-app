@@ -5,17 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <h1>My Tasks</h1>
+    <main class="app">
+        <header class="app-header">
+            <h1>My Tasks</h1>
+            <p id="counter"></p>
+        </header>
 
-    <form id="task-form">
-        <input type="text" id="task-input" placeholder="Add a new task" required>
-        <button type="submit">Add Task</button>
-    </form>
+        <form id="task-form">
+            <input type="text" id="task-input" placeholder="What needs to be done?" required>
+            <button type="submit">Add</button>
+        </form>
 
-    <ul id="task-list"></ul>
+        <ul id="task-list"></ul>
+        <p id="empty" hidden>No tasks yet. Add your first one above ✨</p>
+    </main>
 
     <script src="app.js"></script>
 </body>
