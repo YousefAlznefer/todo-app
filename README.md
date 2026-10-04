@@ -29,7 +29,7 @@ A full-stack task manager built from scratch with Node.js, Express, and SQLite.
 ## Run Locally
 
 ```bash
-git clone [رابط المستودع]
+git clone https://github.com/YousefAlznefer/todo-app.git
 cd todo-app/backend
 npm install
 npm run dev
